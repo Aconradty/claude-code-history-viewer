@@ -39,6 +39,7 @@ const isTauriAvailable = () => {
 interface AppStore extends AppState {
   // Filter state
   excludeSidechain: boolean;
+  showSystemMessages: boolean;
 
   // Analytics state
   analytics: AnalyticsState;
@@ -71,6 +72,7 @@ interface AppStore extends AppState {
   ) => Promise<SessionComparison>;
   clearTokenStats: () => void;
   setExcludeSidechain: (exclude: boolean) => void;
+  setShowSystemMessages: (show: boolean) => void;
 
   // Session search actions (카카오톡 스타일 네비게이션 검색)
   setSessionSearchQuery: (query: string) => void;
@@ -162,6 +164,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   sessionTokenStats: null,
   projectTokenStats: [],
   excludeSidechain: true,
+  showSystemMessages: false, // 기본값: 시스템 메시지 숨김
 
   // Session search state (카카오톡 스타일 네비게이션 검색)
   sessionSearch: {
@@ -326,9 +329,17 @@ export const useAppStore = create<AppStore>((set, get) => ({
       );
 
       // sidechain 필터링 (프론트엔드에서 처리)
-      const filteredMessages = get().excludeSidechain
+      let filteredMessages = get().excludeSidechain
         ? allMessages.filter((m) => !m.isSidechain)
         : allMessages;
+
+      // 시스템 메시지 필터링 (queue-operation, progress, file-history-snapshot)
+      const systemMessageTypes = ["queue-operation", "progress", "file-history-snapshot"];
+      if (!get().showSystemMessages) {
+        filteredMessages = filteredMessages.filter(
+          (m) => !systemMessageTypes.includes(m.type)
+        );
+      }
 
       const duration = performance.now() - start;
       if (import.meta.env.DEV) {
@@ -583,6 +594,15 @@ export const useAppStore = create<AppStore>((set, get) => ({
       // 프로젝트 다시 로드하여 세션 목록의 message_count 업데이트
       get().selectProject(selectedProject);
     }
+    if (selectedSession) {
+      get().selectSession(selectedSession);
+    }
+  },
+
+  setShowSystemMessages: (show: boolean) => {
+    set({ showSystemMessages: show });
+    // 필터 변경 시 현재 세션 새로고침
+    const { selectedSession } = get();
     if (selectedSession) {
       get().selectSession(selectedSession);
     }

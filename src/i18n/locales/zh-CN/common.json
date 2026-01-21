@@ -33,7 +33,11 @@
     },
     "checkUpdate": "检查更新",
     "checking": "检查中...",
-    "updateSettings": "更新设置"
+    "updateSettings": "更新设置",
+    "filter": {
+      "title": "筛选",
+      "showSystemMessages": "显示系统消息"
+    }
   },
   "time": {
     "justNow": "刚刚",

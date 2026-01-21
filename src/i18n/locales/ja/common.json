@@ -33,7 +33,11 @@
     },
     "checkUpdate": "アップデートを確認",
     "checking": "確認中...",
-    "updateSettings": "アップデート設定"
+    "updateSettings": "アップデート設定",
+    "filter": {
+      "title": "フィルター",
+      "showSystemMessages": "システムメッセージを表示"
+    }
   },
   "time": {
     "justNow": "たった今",

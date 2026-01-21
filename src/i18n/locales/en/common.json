@@ -33,7 +33,11 @@
     },
     "checkUpdate": "Check for Updates",
     "checking": "Checking...",
-    "updateSettings": "Update Settings"
+    "updateSettings": "Update Settings",
+    "filter": {
+      "title": "Filter",
+      "showSystemMessages": "Show System Messages"
+    }
   },
   "time": {
     "justNow": "just now",

@@ -33,7 +33,11 @@
     },
     "checkUpdate": "檢查更新",
     "checking": "檢查中...",
-    "updateSettings": "更新設定"
+    "updateSettings": "更新設定",
+    "filter": {
+      "title": "篩選",
+      "showSystemMessages": "顯示系統訊息"
+    }
   },
   "time": {
     "justNow": "剛剛",
