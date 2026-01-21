@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useDeferredValue,
 } from "react";
+import { OverlayScrollbarsComponent, type OverlayScrollbarsComponentRef } from "overlayscrollbars-react";
 import { Loader2, MessageCircle, ChevronDown, ChevronUp, Search, X, HelpCircle, ChevronRight, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { ClaudeMessage, ClaudeSession, ProgressData } from "../types";
@@ -576,8 +577,14 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
   onPrevMatch,
 }) => {
   const { t } = useTranslation("components");
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<OverlayScrollbarsComponentRef>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper to get the scroll viewport element
+  const getScrollViewport = useCallback(() => {
+    return scrollContainerRef.current?.osInstance()?.elements().viewport ?? null;
+  }, []);
+
   // Optimistic UI: 입력 상태를 별도로 관리 (startTransition으로 비긴급 업데이트)
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -674,8 +681,8 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
 
   // 맨 아래로 스크롤하는 함수
   const scrollToBottom = useCallback(() => {
-    if (scrollContainerRef.current) {
-      const element = scrollContainerRef.current;
+    const element = getScrollViewport();
+    if (element) {
       // 여러 번 시도하여 확실히 맨 아래로 이동
       const attemptScroll = (attempts = 0) => {
         element.scrollTop = element.scrollHeight;
@@ -688,7 +695,7 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
       };
       attemptScroll();
     }
-  }, []);
+  }, [getScrollViewport]);
 
   // 새로운 세션 선택 시 스크롤을 맨 아래로 이동 (채팅 스타일)
   useEffect(() => {
@@ -716,10 +723,11 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
 
   // 현재 매치된 하이라이트 텍스트로 스크롤 이동
   const scrollToHighlight = useCallback((matchUuid: string | null) => {
-    if (!scrollContainerRef.current) return;
+    const viewport = getScrollViewport();
+    if (!viewport) return;
 
     // 먼저 하이라이트된 텍스트 요소를 찾음
-    const highlightElement = scrollContainerRef.current.querySelector(
+    const highlightElement = viewport.querySelector(
       '[data-search-highlight="current"]'
     );
 
@@ -734,7 +742,7 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
 
     // 하이라이트 요소가 없으면 메시지 영역으로 스크롤 (fallback)
     if (matchUuid) {
-      const messageElement = scrollContainerRef.current.querySelector(
+      const messageElement = viewport.querySelector(
         `[data-message-uuid="${matchUuid}"]`
       );
 
@@ -745,7 +753,7 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
         });
       }
     }
-  }, []);
+  }, [getScrollViewport]);
 
   // 현재 매치 변경 시 해당 하이라이트로 스크롤
   useEffect(() => {
@@ -781,10 +789,11 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
 
   // 맨 위로 스크롤하는 함수
   const scrollToTop = useCallback(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    const viewport = getScrollViewport();
+    if (viewport) {
+      viewport.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, []);
+  }, [getScrollViewport]);
 
   // 스크롤 이벤트 최적화 (쓰로틀링 적용)
   useEffect(() => {
@@ -795,9 +804,9 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
 
       throttleTimer = setTimeout(() => {
         try {
-          if (scrollContainerRef.current) {
-            const { scrollTop, scrollHeight, clientHeight } =
-              scrollContainerRef.current;
+          const viewport = getScrollViewport();
+          if (viewport) {
+            const { scrollTop, scrollHeight, clientHeight } = viewport;
             const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
             const isNearTop = scrollTop < 100;
             setShowScrollToBottom(!isNearBottom && displayMessages.length > 5);
@@ -810,19 +819,26 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
       }, 100);
     };
 
-    const scrollElement = scrollContainerRef.current;
-    if (scrollElement) {
-      scrollElement.addEventListener("scroll", handleScroll, { passive: true });
-      handleScroll();
+    // Delay to ensure OverlayScrollbars is initialized
+    const timer = setTimeout(() => {
+      const scrollElement = getScrollViewport();
+      if (scrollElement) {
+        scrollElement.addEventListener("scroll", handleScroll, { passive: true });
+        handleScroll();
+      }
+    }, 100);
 
-      return () => {
-        if (throttleTimer) {
-          clearTimeout(throttleTimer);
-        }
+    return () => {
+      clearTimeout(timer);
+      if (throttleTimer) {
+        clearTimeout(throttleTimer);
+      }
+      const scrollElement = getScrollViewport();
+      if (scrollElement) {
         scrollElement.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, [displayMessages.length]);
+      }
+    };
+  }, [displayMessages.length, getScrollViewport]);
 
   if (isLoading && messages.length === 0) {
     return (
@@ -1051,10 +1067,12 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
         </div>
       </div>
 
-      <div
+      <OverlayScrollbarsComponent
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto scrollbar-thin"
-        style={{ scrollBehavior: "auto" }}
+        className="flex-1"
+        options={{
+          scrollbars: { theme: "os-theme-custom", autoHide: "leave", autoHideDelay: 400 },
+        }}
       >
         {/* 디버깅 정보 */}
         {import.meta.env.DEV && (
@@ -1234,7 +1252,7 @@ export const MessageViewer: React.FC<MessageViewerProps> = ({
             </button>
           )}
         </div>
-      </div>
+      </OverlayScrollbarsComponent>
     </div>
   );
 };

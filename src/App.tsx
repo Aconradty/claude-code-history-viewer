@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { ProjectTree } from "./components/ProjectTree";
 import { MessageViewer } from "./components/MessageViewer";
 import { TokenStatsViewer } from "./components/TokenStatsViewer";
@@ -272,25 +273,36 @@ function App() {
             {/* Content */}
             <div className="flex-1 overflow-hidden">
               {computed.isRecentEditsView ? (
-                <div className="h-full overflow-y-auto scrollbar-thin">
+                <OverlayScrollbarsComponent
+                  className="h-full"
+                  options={{ scrollbars: { theme: "os-theme-custom", autoHide: "leave" } }}
+                >
                   <RecentEditsViewer
                     recentEdits={analyticsState.recentEdits}
                     isLoading={analyticsState.isLoadingRecentEdits}
                     error={analyticsState.recentEditsError}
                   />
-                </div>
+                </OverlayScrollbarsComponent>
               ) : computed.isAnalyticsView || isViewingGlobalStats ? (
-                <div className="h-full overflow-y-auto scrollbar-thin">
+                <OverlayScrollbarsComponent
+                  className="h-full"
+                  options={{ scrollbars: { theme: "os-theme-custom", autoHide: "leave" } }}
+                >
                   <AnalyticsDashboard isViewingGlobalStats={isViewingGlobalStats} />
-                </div>
+                </OverlayScrollbarsComponent>
               ) : computed.isTokenStatsView ? (
-                <div className="h-full overflow-y-auto scrollbar-thin p-6">
-                  <TokenStatsViewer
-                    title={tMessages("tokenStats.title")}
-                    sessionStats={sessionTokenStats}
-                    projectStats={projectTokenStats}
-                  />
-                </div>
+                <OverlayScrollbarsComponent
+                  className="h-full"
+                  options={{ scrollbars: { theme: "os-theme-custom", autoHide: "leave" } }}
+                >
+                  <div className="p-6">
+                    <TokenStatsViewer
+                      title={tMessages("tokenStats.title")}
+                      sessionStats={sessionTokenStats}
+                      projectStats={projectTokenStats}
+                    />
+                  </div>
+                </OverlayScrollbarsComponent>
               ) : selectedSession ? (
                 <MessageViewer
                   messages={messages}

@@ -13,11 +13,9 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
-import "overlayscrollbars/overlayscrollbars.css";
 import type { ClaudeProject, ClaudeSession } from "../types";
 import { cn } from "@/lib/utils";
 import { getLocale } from "../utils/time";
-import "./ProjectTree.css";
 
 interface ProjectTreeProps {
   projects: ClaudeProject[];
@@ -88,28 +86,18 @@ export const ProjectTree: React.FC<ProjectTreeProps> = ({
   return (
     <aside
       className={cn(
-        "flex-shrink-0 bg-sidebar border-r-0 flex flex-col h-full relative",
+        "flex-shrink-0 bg-sidebar border-r-0 flex h-full",
         !width && "w-64",
         isResizing && "select-none"
       )}
       style={sidebarStyle}
     >
-      {/* Right accent border */}
-      <div className="absolute right-0 inset-y-0 w-[2px] bg-gradient-to-b from-accent/40 via-accent/60 to-accent/40" />
+      {/* Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 relative">
+        {/* Right accent border */}
+        <div className="absolute right-0 inset-y-0 w-[2px] bg-gradient-to-b from-accent/40 via-accent/60 to-accent/40" />
 
-      {/* Resize Handle */}
-      {onResizeStart && (
-        <div
-          className={cn(
-            "absolute right-0 top-0 bottom-0 w-2 cursor-col-resize z-10",
-            "hover:bg-accent/20 active:bg-accent/30 transition-colors",
-            isResizing && "bg-accent/30"
-          )}
-          onMouseDown={onResizeStart}
-        />
-      )}
-
-      {/* Sidebar Header */}
+        {/* Sidebar Header */}
       <div className="px-4 py-3 bg-accent/5 border-b border-accent/10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -132,6 +120,9 @@ export const ProjectTree: React.FC<ProjectTreeProps> = ({
             theme: "os-theme-custom",
             autoHide: "leave",
             autoHideDelay: 400,
+          },
+          overflow: {
+            x: "hidden",
           },
         }}
       >
@@ -386,6 +377,19 @@ export const ProjectTree: React.FC<ProjectTreeProps> = ({
           </span>
         </div>
       </div>
+      </div>
+
+      {/* Resize Handle - Outside scroll area */}
+      {onResizeStart && (
+        <div
+          className={cn(
+            "w-3 cursor-col-resize flex-shrink-0",
+            "hover:bg-accent/20 active:bg-accent/30 transition-colors",
+            isResizing && "bg-accent/30"
+          )}
+          onMouseDown={onResizeStart}
+        />
+      )}
     </aside>
   );
 };
