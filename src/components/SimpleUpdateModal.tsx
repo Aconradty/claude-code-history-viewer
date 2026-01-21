@@ -7,8 +7,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { ExternalLink, Download, AlertTriangle, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { UseGitHubUpdaterReturn } from '@/hooks/useGitHubUpdater';
 import { skipVersion, postponeUpdate } from '@/utils/updateSettings';
+import { layout } from "@/components/renderers";
 
 interface SimpleUpdateModalProps {
   updater: UseGitHubUpdaterReturn;
@@ -17,8 +19,9 @@ interface SimpleUpdateModalProps {
 }
 
 export function SimpleUpdateModal({ updater, isVisible, onClose }: SimpleUpdateModalProps) {
+  const { t } = useTranslation('components');
   const [showDetails, setShowDetails] = useState(false);
-  
+
   if (!updater.state.releaseInfo || !updater.state.hasUpdate) return null;
 
   const release = updater.state.releaseInfo;
@@ -49,81 +52,81 @@ export function SimpleUpdateModal({ updater, isVisible, onClose }: SimpleUpdateM
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            새 업데이트 사용 가능
+            {t('simpleUpdateModal.newUpdateAvailable')}
             {isImportant && (
-              <span className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">
+              <span className={`px-2 py-1 ${layout.smallText} bg-red-100 text-red-700 rounded`}>
                 <AlertTriangle className="w-3 h-3 inline mr-1" />
-                중요
+                {t('simpleUpdateModal.important')}
               </span>
             )}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* 버전 정보 */}
+          {/* Version info */}
           <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">현재 버전</div>
+              <div className={`${layout.bodyText} text-gray-600 dark:text-gray-400`}>{t('simpleUpdateModal.currentVersion')}</div>
               <div className="font-medium dark:text-white">{currentVersion}</div>
             </div>
             <div className="text-2xl text-gray-400 dark:text-gray-500">→</div>
             <div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">새 버전</div>
+              <div className={`${layout.bodyText} text-gray-600 dark:text-gray-400`}>{t('simpleUpdateModal.newVersion')}</div>
               <div className="font-medium text-blue-600 dark:text-blue-400">{newVersion}</div>
             </div>
           </div>
 
-          {/* 다운로드 진행률 */}
+          {/* Download progress */}
           {updater.state.isDownloading && (
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm">
+              <div className={`flex items-center gap-2 ${layout.bodyText}`}>
                 <Download className="w-4 h-4 animate-bounce" />
-                <span className="dark:text-gray-300">다운로드 중... {updater.state.downloadProgress}%</span>
+                <span className="dark:text-gray-300">{t('simpleUpdateModal.downloading', { progress: updater.state.downloadProgress })}</span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div 
-                  className="bg-blue-600 h-2 rounded-full transition-all" 
+                <div
+                  className="bg-blue-600 h-2 rounded-full transition-all"
                   style={{ width: `${updater.state.downloadProgress}%` }}
                 />
               </div>
             </div>
           )}
 
-          {/* 설치 중 */}
+          {/* Installing */}
           {updater.state.isInstalling && (
-            <div className="flex items-center gap-2 text-sm p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+            <div className={`flex items-center gap-2 ${layout.bodyText} p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg`}>
               <div className="animate-spin w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full" />
-              <span className="dark:text-gray-300">설치 중... 잠시 후 앱이 재시작됩니다.</span>
+              <span className="dark:text-gray-300">{t('simpleUpdateModal.installing')}</span>
             </div>
           )}
 
-          {/* 에러 표시 */}
+          {/* Error display */}
           {updater.state.error && (
             <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <div className="flex items-center gap-2 text-sm text-red-700 dark:text-red-400">
+              <div className={`flex items-center gap-2 ${layout.bodyText} text-red-700 dark:text-red-400`}>
                 <AlertTriangle className="w-4 h-4" />
-                <span>오류가 발생했습니다: {updater.state.error}</span>
+                <span>{t('simpleUpdateModal.errorOccurred', { error: updater.state.error })}</span>
               </div>
             </div>
           )}
 
-          {/* 세부 정보 */}
+          {/* Details */}
           <div>
             <button
               onClick={() => setShowDetails(!showDetails)}
-              className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline"
+              className={`${layout.bodyText} text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline`}
             >
-              {showDetails ? '세부 정보 숨기기' : '세부 정보 보기'}
+              {showDetails ? t('simpleUpdateModal.hideDetails') : t('simpleUpdateModal.showDetails')}
             </button>
 
             {showDetails && (
-              <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg text-sm">
+              <div className={`mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg ${layout.bodyText}`}>
                 <div className="mb-2">
-                  <strong className="dark:text-gray-200">릴리스명:</strong> <span className="dark:text-gray-300">{release.name}</span>
+                  <strong className="dark:text-gray-200">{t('simpleUpdateModal.releaseName')}</strong> <span className="dark:text-gray-300">{release.name}</span>
                 </div>
                 <div className="mb-2">
-                  <strong className="dark:text-gray-200">변경사항:</strong>
-                  <pre className="mt-1 text-xs bg-white dark:bg-gray-900 dark:text-gray-300 p-2 rounded border dark:border-gray-600 max-h-32 overflow-auto">
+                  <strong className="dark:text-gray-200">{t('simpleUpdateModal.changes')}</strong>
+                  <pre className={`mt-1 ${layout.smallText} bg-white dark:bg-gray-900 dark:text-gray-300 p-2 rounded border dark:border-gray-600 max-h-32 overflow-auto`}>
                     {release.body}
                   </pre>
                 </div>
@@ -134,7 +137,7 @@ export function SimpleUpdateModal({ updater, isVisible, onClose }: SimpleUpdateM
                   className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 >
                   <ExternalLink className="w-3 h-3" />
-                  GitHub에서 보기
+                  {t('simpleUpdateModal.viewOnGitHub')}
                 </a>
               </div>
             )}
@@ -151,14 +154,14 @@ export function SimpleUpdateModal({ updater, isVisible, onClose }: SimpleUpdateM
               {updater.state.isDownloading ? (
                 <>
                   <Download className="w-4 h-4 inline mr-2 animate-bounce" />
-                  다운로드 중...
+                  {t('simpleUpdateModal.downloadingShort')}
                 </>
               ) : updater.state.isInstalling ? (
-                '설치 중...'
+                t('simpleUpdateModal.installingShort')
               ) : (
                 <>
                   <Download className="w-4 h-4 inline mr-2" />
-                  다운로드 & 설치
+                  {t('simpleUpdateModal.downloadAndInstall')}
                 </>
               )}
             </button>
@@ -167,16 +170,16 @@ export function SimpleUpdateModal({ updater, isVisible, onClose }: SimpleUpdateM
               <button
                 onClick={handlePostpone}
                 disabled={updater.state.isDownloading || updater.state.isInstalling}
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 text-sm"
+                className={`flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 ${layout.bodyText}`}
               >
-                24시간 후 다시 알림
+                {t('simpleUpdateModal.remindLater')}
               </button>
               <button
                 onClick={handleSkip}
                 disabled={updater.state.isDownloading || updater.state.isInstalling}
-                className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 text-sm"
+                className={`flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 ${layout.bodyText}`}
               >
-                이 버전 건너뛰기
+                {t('simpleUpdateModal.skipVersion')}
               </button>
               <button
                 onClick={onClose}

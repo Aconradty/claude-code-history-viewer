@@ -742,5 +742,24 @@
   },
   "summaryMessageRenderer": {
     "title": "会話の要約"
+  },
+  "simpleUpdateModal": {
+    "newUpdateAvailable": "新しいアップデートが利用可能",
+    "important": "重要",
+    "currentVersion": "現在のバージョン",
+    "newVersion": "新しいバージョン",
+    "downloading": "ダウンロード中... {{progress}}%",
+    "installing": "インストール中... まもなくアプリが再起動します。",
+    "errorOccurred": "エラーが発生しました: {{error}}",
+    "hideDetails": "詳細を隠す",
+    "showDetails": "詳細を表示",
+    "releaseName": "リリース名:",
+    "changes": "変更内容:",
+    "viewOnGitHub": "GitHubで表示",
+    "downloadingShort": "ダウンロード中...",
+    "installingShort": "インストール中...",
+    "downloadAndInstall": "ダウンロード & インストール",
+    "remindLater": "24時間後に再通知",
+    "skipVersion": "このバージョンをスキップ"
   }
 }

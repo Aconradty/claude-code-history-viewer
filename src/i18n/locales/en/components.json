@@ -753,5 +753,24 @@
   },
   "summaryMessageRenderer": {
     "title": "Conversation Summary"
+  },
+  "simpleUpdateModal": {
+    "newUpdateAvailable": "New Update Available",
+    "important": "Important",
+    "currentVersion": "Current Version",
+    "newVersion": "New Version",
+    "downloading": "Downloading... {{progress}}%",
+    "installing": "Installing... App will restart shortly.",
+    "errorOccurred": "An error occurred: {{error}}",
+    "hideDetails": "Hide Details",
+    "showDetails": "Show Details",
+    "releaseName": "Release Name:",
+    "changes": "Changes:",
+    "viewOnGitHub": "View on GitHub",
+    "downloadingShort": "Downloading...",
+    "installingShort": "Installing...",
+    "downloadAndInstall": "Download & Install",
+    "remindLater": "Remind me in 24 hours",
+    "skipVersion": "Skip this version"
   }
 }

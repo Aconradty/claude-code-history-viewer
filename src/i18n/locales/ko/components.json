@@ -768,5 +768,24 @@
   },
   "summaryMessageRenderer": {
     "title": "대화 요약"
+  },
+  "simpleUpdateModal": {
+    "newUpdateAvailable": "새 업데이트 사용 가능",
+    "important": "중요",
+    "currentVersion": "현재 버전",
+    "newVersion": "새 버전",
+    "downloading": "다운로드 중... {{progress}}%",
+    "installing": "설치 중... 잠시 후 앱이 재시작됩니다.",
+    "errorOccurred": "오류가 발생했습니다: {{error}}",
+    "hideDetails": "세부 정보 숨기기",
+    "showDetails": "세부 정보 보기",
+    "releaseName": "릴리스명:",
+    "changes": "변경사항:",
+    "viewOnGitHub": "GitHub에서 보기",
+    "downloadingShort": "다운로드 중...",
+    "installingShort": "설치 중...",
+    "downloadAndInstall": "다운로드 & 설치",
+    "remindLater": "24시간 후 다시 알림",
+    "skipVersion": "이 버전 건너뛰기"
   }
 }
