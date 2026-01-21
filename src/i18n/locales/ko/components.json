@@ -769,6 +769,9 @@
   "summaryMessageRenderer": {
     "title": "대화 요약"
   },
+  "claudeToolUseDisplay": {
+    "unknownTool": "알 수 없는 도구"
+  },
   "collapsibleToolResult": {
     "terminalOutput": "터미널 출력",
     "noOutput": "출력 없음",

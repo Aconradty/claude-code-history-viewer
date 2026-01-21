@@ -758,6 +758,9 @@
   "summaryMessageRenderer": {
     "title": "對話摘要"
   },
+  "claudeToolUseDisplay": {
+    "unknownTool": "未知工具"
+  },
   "collapsibleToolResult": {
     "terminalOutput": "終端輸出",
     "noOutput": "無輸出",

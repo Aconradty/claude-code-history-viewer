@@ -754,6 +754,9 @@
   "summaryMessageRenderer": {
     "title": "Conversation Summary"
   },
+  "claudeToolUseDisplay": {
+    "unknownTool": "Unknown Tool"
+  },
   "collapsibleToolResult": {
     "terminalOutput": "Terminal output",
     "noOutput": "No output",

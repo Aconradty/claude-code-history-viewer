@@ -743,6 +743,9 @@
   "summaryMessageRenderer": {
     "title": "会話の要約"
   },
+  "claudeToolUseDisplay": {
+    "unknownTool": "不明なツール"
+  },
   "collapsibleToolResult": {
     "terminalOutput": "ターミナル出力",
     "noOutput": "出力なし",
