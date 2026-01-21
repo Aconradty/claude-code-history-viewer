@@ -7,10 +7,11 @@ import { RecentEditsViewer } from "./components/RecentEditsViewer";
 import { SimpleUpdateManager } from "./components/SimpleUpdateManager";
 import { useAppStore } from "./store/useAppStore";
 import { useAnalytics } from "./hooks/useAnalytics";
+import { useResizablePanel } from "./hooks/useResizablePanel";
 
 import { useTranslation } from "react-i18next";
 import { AppErrorType, type ClaudeSession, type ClaudeProject } from "./types";
-import { AlertTriangle, Loader2, MessageSquare } from "lucide-react";
+import { AlertTriangle, Loader2, MessageSquare, Database, BarChart3, FileEdit, Coins } from "lucide-react";
 import { useLanguageStore } from "./store/useLanguageStore";
 import { type SupportedLanguage } from "./i18n";
 
@@ -64,6 +65,18 @@ function App() {
 
   const [isViewingGlobalStats, setIsViewingGlobalStats] = useState(false);
 
+  // Sidebar resize
+  const {
+    width: sidebarWidth,
+    isResizing: isSidebarResizing,
+    handleMouseDown: handleSidebarResizeStart,
+  } = useResizablePanel({
+    defaultWidth: 256,
+    minWidth: 200,
+    maxWidth: 480,
+    storageKey: "sidebar-width",
+  });
+
   const handleGlobalStatsClick = useCallback(() => {
     setIsViewingGlobalStats(true);
     useAppStore.setState({ selectedProject: null, selectedSession: null });
@@ -72,6 +85,7 @@ function App() {
   }, [loadGlobalStats, setAnalyticsCurrentView]);
 
   const handleSessionSelect = async (session: ClaudeSession) => {
+    setIsViewingGlobalStats(false);
     setAnalyticsCurrentView("messages");
     await selectSession(session);
   };
@@ -198,6 +212,9 @@ function App() {
             onGlobalStatsClick={handleGlobalStatsClick}
             isLoading={isLoadingProjects || isLoadingSessions}
             isViewingGlobalStats={isViewingGlobalStats}
+            width={sidebarWidth}
+            isResizing={isSidebarResizing}
+            onResizeStart={handleSidebarResizeStart}
           />
 
           {/* Main Content Area */}
@@ -207,9 +224,29 @@ function App() {
               computed.isAnalyticsView ||
               computed.isRecentEditsView ||
               isViewingGlobalStats) && (
-              <div className="px-6 py-4 border-b border-border bg-card">
-                <div className="flex items-center justify-between">
-                  <div>
+              <div className="relative px-6 py-5 border-b-0 bg-gradient-to-r from-card via-accent/5 to-card overflow-hidden">
+                {/* Top accent line */}
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent/40 via-accent/60 to-accent/40" />
+                {/* Bottom accent line */}
+                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+                {/* Decorative corner */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-accent/10 to-transparent rounded-bl-full" />
+
+                <div className="relative flex items-center gap-4">
+                  {/* Icon Badge */}
+                  <div className="w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center shadow-sm shadow-accent/20 ring-1 ring-accent/20">
+                    {isViewingGlobalStats ? (
+                      <Database className="w-6 h-6 text-accent" />
+                    ) : computed.isAnalyticsView ? (
+                      <BarChart3 className="w-6 h-6 text-accent" />
+                    ) : computed.isRecentEditsView ? (
+                      <FileEdit className="w-6 h-6 text-accent" />
+                    ) : (
+                      <Coins className="w-6 h-6 text-accent" />
+                    )}
+                  </div>
+
+                  <div className="flex-1">
                     <h2 className="text-lg font-semibold tracking-tight text-foreground">
                       {isViewingGlobalStats
                         ? tComponents("analytics.globalOverview")
@@ -287,16 +324,22 @@ function App() {
         </div>
 
         {/* Status Bar */}
-        <footer className="h-8 px-6 flex items-center justify-between border-t border-border bg-sidebar text-2xs text-muted-foreground">
+        <footer className="relative h-8 px-6 flex items-center justify-between border-t-0 bg-gradient-to-r from-sidebar via-card to-sidebar text-2xs">
+          {/* Top accent line */}
+          <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-accent/40 via-accent/60 to-accent/40" />
+
           <div className="flex items-center gap-4">
-            <span className="font-mono">
-              {tComponents("project.count", { count: projects.length })}
-            </span>
-            <span className="font-mono">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-accent animate-pulse" />
+              <span className="font-mono tabular-nums text-accent/80">
+                {tComponents("project.count", { count: projects.length })}
+              </span>
+            </div>
+            <span className="font-mono tabular-nums text-muted-foreground">
               {tComponents("session.count", { count: sessions.length })}
             </span>
             {selectedSession && computed.isMessagesView && (
-              <span className="font-mono">
+              <span className="font-mono tabular-nums text-muted-foreground bg-muted/50 px-2 py-0.5 rounded">
                 {tComponents("message.count", { count: messages.length })}
               </span>
             )}
@@ -308,9 +351,9 @@ function App() {
               isLoadingSessions ||
               isLoadingMessages ||
               computed.isAnyLoading) && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 animate-fade-in">
                 <Loader2 className="w-3 h-3 animate-spin text-accent" />
-                <span>
+                <span className="text-accent font-medium">
                   {computed.isAnyLoading && tComponents("status.loadingStats")}
                   {isLoadingProjects && tComponents("status.scanning")}
                   {isLoadingSessions && tComponents("status.loadingSessions")}
