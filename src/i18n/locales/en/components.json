@@ -754,6 +754,13 @@
   "summaryMessageRenderer": {
     "title": "Conversation Summary"
   },
+  "collapsibleToolResult": {
+    "terminalOutput": "Terminal output",
+    "noOutput": "No output",
+    "todoListUpdated": "Todo list updated",
+    "editsCount": "{{count}} edit(s)",
+    "result": "Result"
+  },
   "simpleUpdateModal": {
     "newUpdateAvailable": "New Update Available",
     "important": "Important",

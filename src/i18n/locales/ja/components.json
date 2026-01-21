@@ -743,6 +743,13 @@
   "summaryMessageRenderer": {
     "title": "会話の要約"
   },
+  "collapsibleToolResult": {
+    "terminalOutput": "ターミナル出力",
+    "noOutput": "出力なし",
+    "todoListUpdated": "Todoリスト更新済み",
+    "editsCount": "{{count}}件の編集",
+    "result": "結果"
+  },
   "simpleUpdateModal": {
     "newUpdateAvailable": "新しいアップデートが利用可能",
     "important": "重要",

@@ -758,6 +758,13 @@
   "summaryMessageRenderer": {
     "title": "对话摘要"
   },
+  "collapsibleToolResult": {
+    "terminalOutput": "终端输出",
+    "noOutput": "无输出",
+    "todoListUpdated": "待办列表已更新",
+    "editsCount": "{{count}} 处编辑",
+    "result": "结果"
+  },
   "simpleUpdateModal": {
     "newUpdateAvailable": "有新版本可用",
     "important": "重要",

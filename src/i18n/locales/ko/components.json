@@ -769,6 +769,13 @@
   "summaryMessageRenderer": {
     "title": "대화 요약"
   },
+  "collapsibleToolResult": {
+    "terminalOutput": "터미널 출력",
+    "noOutput": "출력 없음",
+    "todoListUpdated": "할 일 목록 업데이트됨",
+    "editsCount": "{{count}}개 편집",
+    "result": "결과"
+  },
   "simpleUpdateModal": {
     "newUpdateAvailable": "새 업데이트 사용 가능",
     "important": "중요",

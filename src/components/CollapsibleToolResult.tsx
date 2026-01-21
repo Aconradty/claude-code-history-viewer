@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { ToolExecutionResultRouter } from "./messageRenderer";
 import { ToolIcon } from "./ToolIcon";
 import { cn } from "@/lib/utils";
+import { layout } from "@/components/renderers";
+type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
 
 type Props = {
   toolUse?: Record<string, unknown>;
@@ -21,7 +24,7 @@ const isSmallResult = (result: unknown): boolean => {
   return true;
 };
 
-const getResultSummary = (result: unknown): string => {
+const getResultSummary = (result: unknown, t: TranslateFn): string => {
   if (typeof result === "object" && result !== null) {
     const r = result as Record<string, unknown>;
 
@@ -35,7 +38,7 @@ const getResultSummary = (result: unknown): string => {
     // Command output
     if (r.stdout || r.stderr) {
       const hasOutput = r.stdout || r.stderr;
-      return hasOutput ? "Terminal output" : "No output";
+      return hasOutput ? t("collapsibleToolResult.terminalOutput") : t("collapsibleToolResult.noOutput");
     }
 
     // Content
@@ -45,19 +48,19 @@ const getResultSummary = (result: unknown): string => {
 
     // Todo changes
     if (r.oldTodos || r.newTodos) {
-      return "Todo list updated";
+      return t("collapsibleToolResult.todoListUpdated");
     }
 
     // Edit result
     if (r.edits && Array.isArray(r.edits)) {
-      return `${r.edits.length} edit(s)`;
+      return t("collapsibleToolResult.editsCount", { count: r.edits.length });
     }
   }
 
   return "";
 };
 
-export const getToolName = (toolUse?: Record<string, unknown>, toolResult?: unknown): string => {
+export const getToolName = (toolUse?: Record<string, unknown>, toolResult?: unknown, t?: TranslateFn): string => {
   // Get name from toolUse if available
   if (toolUse?.name) return String(toolUse.name);
 
@@ -81,7 +84,7 @@ export const getToolName = (toolUse?: Record<string, unknown>, toolResult?: unkn
     if (r.oldTodos || r.newTodos) return "TodoWrite";
   }
 
-  return "Result";
+  return t ? t("collapsibleToolResult.result") : "Result";
 };
 
 export const CollapsibleToolResult = ({
@@ -89,11 +92,12 @@ export const CollapsibleToolResult = ({
   toolResult,
   defaultExpanded,
 }: Props) => {
-  const toolName = getToolName(toolUse, toolResult);
+  const { t } = useTranslation("components");
+  const toolName = getToolName(toolUse, toolResult, t);
   const shouldExpandByDefault = defaultExpanded ?? isSmallResult(toolResult);
   const [isExpanded, setIsExpanded] = useState(shouldExpandByDefault);
 
-  const summary = getResultSummary(toolResult);
+  const summary = getResultSummary(toolResult, t);
 
   return (
     <div className="border border-border rounded-lg mt-2 overflow-hidden">
@@ -112,9 +116,9 @@ export const CollapsibleToolResult = ({
           )}
         />
         <ToolIcon toolName={toolName} className="w-4 h-4 shrink-0 text-muted-foreground" />
-        <span className="text-xs font-medium text-muted-foreground">{toolName}</span>
+        <span className={`${layout.smallText} font-medium text-muted-foreground`}>{toolName}</span>
         {!isExpanded && summary && (
-          <span className="text-xs text-muted-foreground truncate">
+          <span className={`${layout.smallText} text-muted-foreground truncate`}>
             {summary}
           </span>
         )}
