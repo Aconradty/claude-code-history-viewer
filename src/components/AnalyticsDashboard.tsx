@@ -365,7 +365,7 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isViewin
       <div className="space-y-3">
         {topTools.map((tool, index) => {
           const color = toolColors[index % toolColors.length]!;
-          const percentage = (tool.usage_count / totalUsage) * 100;
+          const percentage = totalUsage === 0 ? 0 : (tool.usage_count / totalUsage) * 100;
           const barWidth = (tool.usage_count / maxUsage) * 100;
 
           return (
@@ -712,6 +712,9 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isViewin
     const tokenGrowth = lastDayStats && prevDayStats
       ? calculateGrowthRate(lastDayStats.total_tokens, prevDayStats.total_tokens)
       : 0;
+    const messageGrowth = lastDayStats && prevDayStats
+      ? calculateGrowthRate(lastDayStats.message_count, prevDayStats.message_count)
+      : 0;
 
     return (
       <div className="space-y-6 animate-stagger">
@@ -721,13 +724,14 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ isViewin
             icon={MessageCircle}
             label={t("analytics.totalMessages")}
             value={formatNumber(projectSummary.total_messages)}
-            trend={tokenGrowth}
+            trend={messageGrowth}
             colorVariant="purple"
           />
           <MetricCard
             icon={Activity}
             label={t("analytics.totalTokens")}
             value={formatNumber(projectSummary.total_tokens)}
+            trend={tokenGrowth}
             subValue={`${projectSummary.total_sessions} sessions`}
             colorVariant="blue"
           />
