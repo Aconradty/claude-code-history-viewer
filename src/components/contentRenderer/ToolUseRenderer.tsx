@@ -93,8 +93,8 @@ export const ToolUseRenderer = ({
 
   // === Write Tool Renderer ===
   if (isWriteTool) {
-    const filePath = (toolInput.file_path as string) || "";
-    const content = (toolInput.content as string) || "";
+    const filePath = typeof toolInput.file_path === "string" ? toolInput.file_path : "";
+    const content = typeof toolInput.content === "string" ? toolInput.content : "";
     const language = getLanguageFromPath(filePath);
     const writeStyles = getVariantStyles("success");
 
@@ -176,9 +176,9 @@ export const ToolUseRenderer = ({
 
   // === Edit Tool Renderer ===
   if (isEditTool) {
-    const filePath = (toolInput.file_path as string) || "";
-    const oldString = (toolInput.old_string as string) || "";
-    const newString = (toolInput.new_string as string) || "";
+    const filePath = typeof toolInput.file_path === "string" ? toolInput.file_path : "";
+    const oldString = typeof toolInput.old_string === "string" ? toolInput.old_string : "";
+    const newString = typeof toolInput.new_string === "string" ? toolInput.new_string : "";
     const replaceAll = (toolInput.replace_all as boolean) || false;
 
     return (

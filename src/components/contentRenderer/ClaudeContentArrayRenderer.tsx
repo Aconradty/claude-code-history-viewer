@@ -95,8 +95,8 @@ export const ClaudeContentArrayRenderer = ({
                 return <ImageRenderer key={index} imageUrl={imageUrl} />;
               }
               // URL 이미지
-              if (source.type === "url" && source.url) {
-                return <ImageRenderer key={index} imageUrl={source.url as string} />;
+              if (source.type === "url" && typeof source.url === "string") {
+                return <ImageRenderer key={index} imageUrl={source.url} />;
               }
             }
             return null;

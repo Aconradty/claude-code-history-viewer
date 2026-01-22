@@ -26,7 +26,11 @@ export const ErrorRenderer = ({ error, searchQuery }: Props) => {
       />
       <Renderer.Content>
         <div className={cn(layout.bodyText, layout.containerPadding, layout.rounded, "max-h-80 overflow-y-scroll text-destructive bg-destructive/5 border border-destructive/30 whitespace-pre-wrap")}>
-          <Markdown remarkPlugins={[remarkGfm]}>{errorMessage}</Markdown>
+          {searchQuery ? (
+            <HighlightedText text={errorMessage} searchQuery={searchQuery} />
+          ) : (
+            <Markdown remarkPlugins={[remarkGfm]}>{errorMessage}</Markdown>
+          )}
         </div>
       </Renderer.Content>
     </Renderer>

@@ -120,12 +120,14 @@ export function SimpleUpdateModal({ updater, isVisible, onClose }: SimpleUpdateM
               size="sm"
               onClick={() => setShowDetails(!showDetails)}
               className="h-auto p-0 text-xs"
+              aria-expanded={showDetails}
+              aria-controls="update-details-panel"
             >
               {showDetails ? t('simpleUpdateModal.hideDetails') : t('simpleUpdateModal.showDetails')}
             </Button>
 
             {showDetails && (
-              <div className="mt-2 p-2.5 bg-muted/50 rounded-md text-xs">
+              <div id="update-details-panel" className="mt-2 p-2.5 bg-muted/50 rounded-md text-xs">
                 <div className="mb-1.5">
                   <strong className="text-foreground">{t('simpleUpdateModal.releaseName')}</strong>{' '}
                   <span className="text-muted-foreground">{release.name}</span>
