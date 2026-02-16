@@ -271,7 +271,7 @@ jobs:
                   .get(url, response => {
                     if (response.statusCode !== 200) {
                       file.close(() => fs.unlink(dest, (err) => {
-                        if (err) console.warn('Failed to cleanup partial download:', err.message);
+                        if (err) console.warn(`Failed to cleanup partial download at ${dest}:`, err.message);
                       }));
                       return reject(new Error(`Failed to download file: ${response.statusCode} ${response.statusMessage}`));
                     }
@@ -282,7 +282,7 @@ jobs:
                   })
                   .on('error', err => {
                     file.close(() => fs.unlink(dest, (err) => {
-                      if (err) console.warn('Failed to cleanup partial download:', err.message);
+                      if (err) console.warn(`Failed to cleanup partial download at ${dest}:`, err.message);
                     }));
                     reject(err);
                   });
@@ -332,7 +332,7 @@ jobs:
               console.log(`🍺 Triggered tap update: v${version}, sha256: ${sha256}`);
             } catch (error) {
               console.error('❌ Failed to trigger Homebrew tap update:', {
-                message: error && error.message ? error.message : String(error),
+                message: error?.message ?? String(error),
                 url: dmgUrl
               });
               throw error;
