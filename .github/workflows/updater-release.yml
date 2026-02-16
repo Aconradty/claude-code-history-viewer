@@ -263,29 +263,83 @@ jobs:
               `app-${Date.now()}-${Math.random().toString(36).slice(2)}.dmg`
             );
 
-            // Helper function to download file
+            // Helper function to download file with redirect support
             const downloadFile = (url, dest) => {
+              const maxRedirects = 5;
               return new Promise((resolve, reject) => {
-                const file = fs.createWriteStream(dest);
-                https
-                  .get(url, response => {
-                    if (response.statusCode !== 200) {
-                      file.close(() => fs.unlink(dest, (err) => {
-                        if (err) console.warn(`Failed to clean up file after download error at ${dest}:`, err.message);
-                      }));
-                      return reject(new Error(`Failed to download file: ${response.statusCode} ${response.statusMessage}`));
+                const doRequest = (currentUrl, redirectCount) => {
+                  const req = https.get(currentUrl, response => {
+                    const statusCode = response.statusCode;
+                    
+                    // Handle HTTP redirects
+                    if ([301, 302, 303, 307, 308].includes(statusCode)) {
+                      if (redirectCount >= maxRedirects) {
+                        response.resume(); // discard response data
+                        return reject(new Error(`Too many redirects while downloading file from ${currentUrl}`));
+                      }
+                      const location = response.headers.location;
+                      if (!location) {
+                        response.resume();
+                        return reject(new Error(`Redirect status (${statusCode}) received without Location header from ${currentUrl}`));
+                      }
+                      const redirectUrl = new URL(location, currentUrl).toString();
+                      response.resume();
+                      return doRequest(redirectUrl, redirectCount + 1);
                     }
+
+                    if (statusCode !== 200) {
+                      response.resume();
+                      return reject(new Error(`Failed to download file: ${statusCode} ${response.statusMessage}`));
+                    }
+
+                    const file = fs.createWriteStream(dest);
+                    
+                    // Handle file write errors to avoid hanging on disk/permission issues
+                    file.on('error', err => {
+                      file.close(() => {
+                        fs.unlink(dest, (unlinkErr) => {
+                          if (unlinkErr) {
+                            console.warn(`Failed to clean up partial download at ${dest}:`, unlinkErr.message);
+                          }
+                        });
+                      });
+                      reject(err);
+                    });
+
+                    // Handle response stream errors
+                    response.on('error', err => {
+                      file.close(() => {
+                        fs.unlink(dest, (unlinkErr) => {
+                          if (unlinkErr) {
+                            console.warn(`Failed to clean up partial download at ${dest}:`, unlinkErr.message);
+                          }
+                        });
+                      });
+                      reject(err);
+                    });
+
                     response.pipe(file);
                     file.on('finish', () => {
                       file.close(resolve);
                     });
-                  })
-                  .on('error', err => {
-                    file.close(() => fs.unlink(dest, (err) => {
-                      if (err) console.warn(`Failed to clean up partial download at ${dest}:`, err.message);
-                    }));
+                  });
+
+                  req.on('error', err => {
+                    fs.unlink(dest, (unlinkErr) => {
+                      if (unlinkErr) {
+                        console.warn(`Failed to clean up partial download at ${dest}:`, unlinkErr.message);
+                      }
+                    });
                     reject(err);
                   });
+
+                  // Optional: timeout to prevent hanging on stalled connections
+                  req.setTimeout(30000, () => {
+                    req.destroy(new Error('Download request timed out'));
+                  });
+                };
+
+                doRequest(url, 0);
               });
             };
 
