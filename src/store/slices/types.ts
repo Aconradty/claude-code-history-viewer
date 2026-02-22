@@ -169,6 +169,11 @@ export interface AppStoreState {
   providers: ProviderInfo[];
   activeProviders: ProviderId[];
   isDetectingProviders: boolean;
+
+  // Export state
+  selectedExportSessions: Map<string, import("../slices/exportSlice").ExportSessionInfo>;
+  isExporting: boolean;
+  exportProgress: { current: number; total: number } | null;
 }
 
 export interface AppStoreActions {
@@ -300,6 +305,12 @@ export interface AppStoreActions {
   detectProviders: () => Promise<void>;
   toggleProvider: (id: ProviderId) => void;
   setActiveProviders: (ids: ProviderId[]) => void;
+
+  // Export actions
+  toggleExportSession: (filePath: string, info: import("../slices/exportSlice").ExportSessionInfo) => void;
+  clearExportSelection: () => void;
+  setIsExporting: (exporting: boolean) => void;
+  setExportProgress: (progress: { current: number; total: number } | null) => void;
 }
 
 export type FullAppStore = AppStoreState & AppStoreActions;
