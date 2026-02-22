@@ -151,5 +151,16 @@
   "session.filter.sortNewestFirst": "Sort by newest first",
   "session.filter.sortOldestFirst": "Sort by oldest first",
   "session.filter.noResults": "No sessions match your search",
-  "session.filter.showingCount": "Showing {{count}} of {{total}} sessions"
+  "session.filter.showingCount": "Showing {{count}} of {{total}} sessions",
+  "session.export.actionBarSingular": "{{count}} session selected",
+  "session.export.actionBar": "{{count}} sessions across {{projects}} projects",
+  "session.export.exportButton": "Export",
+  "session.export.clearButton": "Clear",
+  "session.export.progress": "Exporting {{current}}/{{total}} sessions…",
+  "session.export.success": "{{count}} sessions exported",
+  "session.export.successOpen": "Open folder",
+  "session.export.failureSummary": "{{exported}} exported, {{failed}} failed",
+  "session.export.permissionError": "Cannot write to selected folder",
+  "session.export.emptySkipped": "Skipped (empty)",
+  "session.export.noFolderSelected": "No folder selected"
 }

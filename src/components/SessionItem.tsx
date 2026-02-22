@@ -90,6 +90,10 @@ export const SessionItem: React.FC<SessionItemProps> = ({
   const hasClaudeCodeName =
     providerId === "claude" && (hasClaudeCodeNameMeta || hasClaudeCodeNamePattern);
 
+  const toggleExportSession = useAppStore((s) => s.toggleExportSession);
+  const selectedExportSessions = useAppStore((s) => s.selectedExportSessions);
+  const isExportSelected = selectedExportSessions.has(session.file_path);
+
   // Start editing mode
   const startEditing = useCallback(() => {
     setEditValue(displayName || "");
@@ -273,6 +277,24 @@ export const SessionItem: React.FC<SessionItemProps> = ({
     >
       {/* Session Header */}
       <div className="flex items-start gap-2.5">
+        {/* Export selection checkbox */}
+        <input
+          type="checkbox"
+          className="w-3.5 h-3.5 rounded border border-border opacity-0 group-hover:opacity-100 data-[checked=true]:opacity-100 cursor-pointer flex-shrink-0 mt-0.5"
+          data-checked={isExportSelected}
+          checked={isExportSelected}
+          aria-label={`Select ${displayName ?? session.file_path} for export`}
+          onChange={(e) => {
+            e.stopPropagation();
+            toggleExportSession(session.file_path, {
+              sessionName: displayName ?? session.file_path,
+              projectName: session.project_name,
+              projectPath: session.project_name,
+              providerId,
+            });
+          }}
+          onClick={(e) => e.stopPropagation()}
+        />
         {isArchivedCodexSession ? (
           <Tooltip>
             <TooltipTrigger asChild>
