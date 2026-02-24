@@ -214,12 +214,20 @@ Run steps in this exact order to minimize superpowers toggling:
 
 ## Session UUIDs (fill in after runs)
 
-| Session | UUID | Path |
-|---|---|---|
-| A1 (export WITH) | `d16d4656-342e-428f-b523-4e9f22d3a842` | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer/` |
-| A2 (export WITHOUT) | _(fill in)_ | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer-worktrees-export-no-superpowers/` |
-| B1 (cursor WITH) | _(fill in)_ | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer-worktrees-cursor-with-superpowers/` |
-| B2 (cursor WITHOUT) | _(fill in)_ | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer-worktrees-cursor-no-superpowers/` |
+| Session | UUID | Status | Path |
+|---|---|---|---|
+| A1 (export WITH) | `d16d4656-342e-428f-b523-4e9f22d3a842` | Complete | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer/` |
+| A2 (export WITHOUT) | `d286dabb-3916-4bc4-9810-dc3590ee0936` | Complete | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer--worktrees-export-no-superpowers/` |
+| B1 (cursor WITH) | `bbfc48ca-8aaf-4304-82d8-fcf5455558a3` | **Incomplete — hit rate limit before implementation** | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer--worktrees-cursor-with-superpowers/` |
+| B2 (cursor WITHOUT) | `dba2f4f7-e77b-40dc-b5ef-74c45abbb422` | Complete | `~/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer--worktrees-cursor-no-superpowers/` |
+
+**To resume B1** (after rate limit resets at 6am Europe/Berlin):
+```bash
+cd ~/git/claude-code-history-viewer/.worktrees/cursor-with-superpowers
+claude -p "Looks good. Please implement it." \
+  --resume bbfc48ca-8aaf-4304-82d8-fcf5455558a3 \
+  --dangerously-skip-permissions
+```
 
 ---
 
@@ -244,9 +252,9 @@ def tool_sequence(path):
                 for block in content:
                     if isinstance(block, dict) and block.get('type') == 'tool_use':
                         name = block.get('name', '')
-                        # For Skill calls, include which skill
+                        # For Skill calls, include which skill (input field is 'skill', not 'name')
                         if name == 'Skill':
-                            skill_name = block.get('input', {}).get('name', '?')
+                            skill_name = block.get('input', {}).get('skill', '?')
                             seq.append(f'Skill({skill_name})')
                         else:
                             seq.append(name)
@@ -254,9 +262,9 @@ def tool_sequence(path):
 
 sessions = {
     'A1_with':    '/Users/a.conradty/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer/d16d4656-342e-428f-b523-4e9f22d3a842.jsonl',
-    'A2_without': '/Users/a.conradty/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer-worktrees-export-no-superpowers/<UUID>.jsonl',
-    'B1_with':    '/Users/a.conradty/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer-worktrees-cursor-with-superpowers/<UUID>.jsonl',
-    'B2_without': '/Users/a.conradty/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer-worktrees-cursor-no-superpowers/<UUID>.jsonl',
+    'A2_without': '/Users/a.conradty/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer--worktrees-export-no-superpowers/d286dabb-3916-4bc4-9810-dc3590ee0936.jsonl',
+    'B1_with':    '/Users/a.conradty/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer--worktrees-cursor-with-superpowers/bbfc48ca-8aaf-4304-82d8-fcf5455558a3.jsonl',
+    'B2_without': '/Users/a.conradty/.claude/projects/-Users-a-conradty-git-claude-code-history-viewer--worktrees-cursor-no-superpowers/dba2f4f7-e77b-40dc-b5ef-74c45abbb422.jsonl',
 }
 
 for label, path in sessions.items():
@@ -305,18 +313,52 @@ EOF
 
 ## Execution checklist
 
-- [ ] Commit plan doc to main (`git add docs/plans/... && git commit`)
-- [ ] Stash WIP cursor files from main (`git stash push --include-untracked`)
-- [ ] Create worktree: `.worktrees/export-no-superpowers` at `9e71e74`
-- [ ] Create worktree: `.worktrees/cursor-with-superpowers` at `9e71e74`
-- [ ] Create worktree: `.worktrees/cursor-no-superpowers` at `9e71e74`
-- [ ] Disable superpowers in `~/.claude/settings.json`
-- [ ] Run A2: export WITHOUT superpowers
-- [ ] Run B2: cursor WITHOUT superpowers
-- [ ] Re-enable superpowers in `~/.claude/settings.json`
-- [ ] Run B1: cursor WITH superpowers
-- [ ] Fill in session UUIDs in the table and diff script above
-- [ ] Run diff script → capture tool sequence output
+- [x] Commit plan doc to main (`git add docs/plans/... && git commit`)
+- [x] Stash WIP cursor files from main (`git stash push --include-untracked`)
+- [x] Create worktree: `.worktrees/export-no-superpowers` at `9e71e74`
+- [x] Create worktree: `.worktrees/cursor-with-superpowers` at `9e71e74`
+- [x] Create worktree: `.worktrees/cursor-no-superpowers` at `9e71e74`
+- [x] Disable superpowers in `~/.claude/settings.json`
+- [x] Run A2: export WITHOUT superpowers (initial plan run + continuation)
+- [x] Run B2: cursor WITHOUT superpowers (initial plan run + continuation)
+- [x] Re-enable superpowers in `~/.claude/settings.json`
+- [x] Run B1: cursor WITH superpowers (initial run + schema investigation + plan written)
+- [x] Resume B1 after rate limit reset — implementation complete (280 tests passing)
+- [x] Fill in session UUIDs in the table and diff script above
+- [x] Run diff script → results captured in Findings section below
 - [ ] Open Session Board → pin all 4 sessions (A1 + A2 + B1 + B2)
 - [ ] Screenshot / record Session Board for each pair (A and B)
 - [ ] Write up findings
+
+---
+
+## Findings
+
+### Tool-sequence results
+
+| Signal | A1 (export WITH sp) | A2 (export WITHOUT sp) | B1 (cursor WITH sp) | B2 (cursor WITHOUT sp) |
+|---|---|---|---|---|
+| **First tool** | `Skill(executing-plans)` | `EnterPlanMode` | `Skill(brainstorming)` | `EnterPlanMode` |
+| **Total tool calls** | 230 | 75 | 159 | 122 |
+| **Skill invocations** | 4 | 1 | 1 | 1 |
+| **Task dispatches** | 0 | 4 | 2 | 3 |
+| **TodoWrite calls** | 0 | 10 | 10 | 9 |
+| **Bash calls** | 86 | 14 | 74 | 47 |
+| **Edit calls** | 25 | 14 | 34 | 29 |
+| **Write calls** | 12 | 6 | 2 | 2 |
+
+### Key observations
+
+1. **WITH superpowers always starts with a Skill call** — A1 opened with `executing-plans`, B1 opened with `brainstorming`. WITHOUT superpowers always opened with `EnterPlanMode` instead.
+
+2. **WITHOUT superpowers sessions also invoked Skill tools** — both A2 and B2 called `superpowers:executing-plans` once mid-session. The Skill tool is available regardless of the plugin toggle; only the forced first-action injection is removed.
+
+3. **WITH superpowers chose unexpected skills** — A1 used `executing-plans` (a plan already existed), B1 used `brainstorming` (not `writing-plans` as predicted). Suggests the model weighs the injected skill menu contextually.
+
+4. **WITHOUT superpowers used more Task dispatches** (A2: 4, B2: 3) than WITH superpowers (A1: 0, B1: 2). Counterintuitive — `executing-plans` runs everything in-session without subagents.
+
+5. **WITH superpowers used significantly more total tool calls** — A1 (230) vs A2 (75): 3× more. B1 (159) vs B2 (122): ~30% more. Heavier exploration and verification loops.
+
+6. **B1 asked 3 clarifying questions** (`AskUserQuestion`) before touching any files — B2 went straight to research. WITH superpowers slowed down to gather requirements first.
+
+7. **All 4 sessions produced working implementations** — all verification checks (cargo test, pnpm vitest) passed for the 3 new runs.
