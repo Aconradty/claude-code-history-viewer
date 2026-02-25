@@ -151,5 +151,16 @@
   "session.filter.sortNewestFirst": "依最新排序",
   "session.filter.sortOldestFirst": "依最舊排序",
   "session.filter.noResults": "沒有符合的工作階段",
-  "session.filter.showingCount": "顯示 {{count}}/{{total}} 個工作階段"
+  "session.filter.showingCount": "顯示 {{count}}/{{total}} 個工作階段",
+  "session.export.actionBarSingular": "已選擇{{count}}個工作階段",
+  "session.export.actionBar": "{{projects}}個專案中的{{count}}個工作階段",
+  "session.export.exportButton": "匯出",
+  "session.export.clearButton": "清除",
+  "session.export.progress": "正在匯出{{current}}/{{total}}個工作階段…",
+  "session.export.success": "已匯出{{count}}個工作階段",
+  "session.export.successOpen": "開啟資料夾",
+  "session.export.failureSummary": "{{exported}}個成功，{{failed}}個失敗",
+  "session.export.permissionError": "無法寫入所選資料夾",
+  "session.export.emptySkipped": "已跳過（空）",
+  "session.export.noFolderSelected": "未選擇資料夾"
 }

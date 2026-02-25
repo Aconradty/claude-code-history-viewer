@@ -18,6 +18,7 @@ import { getLocale } from "../../utils/time";
 import { ProjectContextMenu } from "../ProjectContextMenu";
 import { useProjectTreeState } from "./hooks/useProjectTreeState";
 import { GroupedProjectList } from "./components/GroupedProjectList";
+import { ExportActionBar } from "@/components/ExportActionBar";
 import type { ProjectTreeProps } from "./types";
 import type { ProviderId } from "../../types";
 import { useAppStore } from "../../store/useAppStore";
@@ -622,6 +623,9 @@ export const ProjectTree: React.FC<ProjectTreeProps> = ({
             </div>
           )}
         </OverlayScrollbarsComponent>
+
+        {/* Export Action Bar — shown when sessions are selected for export */}
+        <ExportActionBar />
       </div>
 
       {/* Resize Handle - Outside scroll area */}

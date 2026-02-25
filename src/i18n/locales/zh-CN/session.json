@@ -151,5 +151,16 @@
   "session.filter.sortNewestFirst": "按最新排序",
   "session.filter.sortOldestFirst": "按最旧排序",
   "session.filter.noResults": "没有匹配的会话",
-  "session.filter.showingCount": "显示 {{count}}/{{total}} 个会话"
+  "session.filter.showingCount": "显示 {{count}}/{{total}} 个会话",
+  "session.export.actionBarSingular": "已选择{{count}}个会话",
+  "session.export.actionBar": "{{projects}}个项目中的{{count}}个会话",
+  "session.export.exportButton": "导出",
+  "session.export.clearButton": "清除",
+  "session.export.progress": "正在导出{{current}}/{{total}}个会话…",
+  "session.export.success": "已导出{{count}}个会话",
+  "session.export.successOpen": "打开文件夹",
+  "session.export.failureSummary": "{{exported}}个成功，{{failed}}个失败",
+  "session.export.permissionError": "无法写入所选文件夹",
+  "session.export.emptySkipped": "已跳过（空）",
+  "session.export.noFolderSelected": "未选择文件夹"
 }

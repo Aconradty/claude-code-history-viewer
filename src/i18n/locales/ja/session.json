@@ -151,5 +151,16 @@
   "session.filter.sortNewestFirst": "新しい順に並べ替え",
   "session.filter.sortOldestFirst": "古い順に並べ替え",
   "session.filter.noResults": "検索に一致するセッションがありません",
-  "session.filter.showingCount": "{{total}}件中{{count}}件を表示"
+  "session.filter.showingCount": "{{total}}件中{{count}}件を表示",
+  "session.export.actionBarSingular": "{{count}}セッション選択中",
+  "session.export.actionBar": "{{projects}}プロジェクトの{{count}}セッション",
+  "session.export.exportButton": "エクスポート",
+  "session.export.clearButton": "クリア",
+  "session.export.progress": "{{current}}/{{total}}セッションをエクスポート中…",
+  "session.export.success": "{{count}}セッションをエクスポートしました",
+  "session.export.successOpen": "フォルダを開く",
+  "session.export.failureSummary": "{{exported}}件成功、{{failed}}件失敗",
+  "session.export.permissionError": "選択したフォルダに書き込めません",
+  "session.export.emptySkipped": "スキップ（空）",
+  "session.export.noFolderSelected": "フォルダが選択されていません"
 }

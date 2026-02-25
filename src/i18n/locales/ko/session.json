@@ -151,5 +151,16 @@
   "session.filter.sortNewestFirst": "최신순 정렬",
   "session.filter.sortOldestFirst": "오래된 순 정렬",
   "session.filter.noResults": "검색 결과가 없습니다",
-  "session.filter.showingCount": "{{total}}개 중 {{count}}개 표시"
+  "session.filter.showingCount": "{{total}}개 중 {{count}}개 표시",
+  "session.export.actionBarSingular": "{{count}}개 세션 선택됨",
+  "session.export.actionBar": "{{projects}}개 프로젝트에서 {{count}}개 세션",
+  "session.export.exportButton": "내보내기",
+  "session.export.clearButton": "지우기",
+  "session.export.progress": "{{current}}/{{total}} 세션 내보내는 중…",
+  "session.export.success": "{{count}}개 세션 내보내기 완료",
+  "session.export.successOpen": "폴더 열기",
+  "session.export.failureSummary": "{{exported}}개 완료, {{failed}}개 실패",
+  "session.export.permissionError": "선택한 폴더에 쓸 수 없습니다",
+  "session.export.emptySkipped": "건너뜀 (비어 있음)",
+  "session.export.noFolderSelected": "폴더가 선택되지 않았습니다"
 }

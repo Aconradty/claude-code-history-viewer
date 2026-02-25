@@ -76,6 +76,21 @@ vi.mock("@/components/NativeRenameDialog", () => ({
   NativeRenameDialog: () => <div data-testid="native-rename-dialog" />,
 }));
 
+// Mock useAppStore for export selection hooks
+const mockToggleExportSession = vi.fn();
+vi.mock("@/store/useAppStore", () => ({
+  useAppStore: (
+    selector: (s: {
+      selectedExportSessions: Map<string, unknown>;
+      toggleExportSession: typeof mockToggleExportSession;
+    }) => unknown,
+  ) =>
+    selector({
+      selectedExportSessions: new Map(),
+      toggleExportSession: mockToggleExportSession,
+    }),
+}));
+
 // Helper to create mock session
 function createMockSession(overrides: Partial<ClaudeSession> = {}): ClaudeSession {
   return {
@@ -541,6 +556,38 @@ describe("SessionItem", () => {
       expect(
         screen.queryByText("Native rename not supported for this provider")
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("export selection", () => {
+    it("renders a checkbox", () => {
+      const session = createMockSession();
+      render(
+        <SessionItem
+          session={session}
+          isSelected={false}
+          onSelect={vi.fn()}
+          formatTimeAgo={() => "2h ago"}
+        />,
+      );
+      expect(screen.getByRole("checkbox")).toBeInTheDocument();
+    });
+
+    it("checkbox calls toggleExportSession on change", () => {
+      const session = createMockSession();
+      render(
+        <SessionItem
+          session={session}
+          isSelected={false}
+          onSelect={vi.fn()}
+          formatTimeAgo={() => "2h ago"}
+        />,
+      );
+      fireEvent.click(screen.getByRole("checkbox"));
+      expect(mockToggleExportSession).toHaveBeenCalledWith(
+        session.file_path,
+        expect.objectContaining({ sessionName: expect.any(String) }),
+      );
     });
   });
 
