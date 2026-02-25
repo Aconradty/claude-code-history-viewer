@@ -609,6 +609,9 @@ pub async fn write_text_file(path: String, content: String) -> Result<(), String
     tauri::async_runtime::spawn_blocking(move || {
         let path = PathBuf::from(path);
 
+        // Validate path is in allowed directories
+        is_safe_path(&path)?;
+
         // Atomic write: write to temp file then rename
         let temp_path = path.with_extension("tmp");
         let mut file = fs::File::create(&temp_path)
