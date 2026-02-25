@@ -80,6 +80,7 @@ export const ProjectTree: React.FC<ProjectTreeProps> = ({
       all: projects.length,
       claude: 0,
       codex: 0,
+      cursor: 0,
       opencode: 0,
     };
 

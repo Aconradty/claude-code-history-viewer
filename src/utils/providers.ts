@@ -1,6 +1,6 @@
 import type { ProviderId } from "../types";
 
-export const PROVIDER_IDS: ProviderId[] = ["claude", "codex", "opencode"];
+export const PROVIDER_IDS: ProviderId[] = ["claude", "codex", "cursor", "opencode"];
 export const DEFAULT_PROVIDER_ID: ProviderId = "claude";
 
 const PROVIDER_TRANSLATIONS: Record<
@@ -9,6 +9,7 @@ const PROVIDER_TRANSLATIONS: Record<
 > = {
   claude: { key: "common.provider.claude", fallback: "Claude Code" },
   codex: { key: "common.provider.codex", fallback: "Codex CLI" },
+  cursor: { key: "common.provider.cursor", fallback: "Cursor AI" },
   opencode: { key: "common.provider.opencode", fallback: "OpenCode" },
 };
 
@@ -17,6 +18,7 @@ type TranslateFn = (key: string, defaultValue: string) => string;
 export function getProviderId(provider?: ProviderId | string): ProviderId {
   switch (provider) {
     case "codex":
+    case "cursor":
     case "opencode":
     case "claude":
       return provider;

@@ -39,6 +39,7 @@ rayon = "1.10"
 memmap2 = "0.9"
 simd-json = "0.14"
 memchr = "2.7"
+rusqlite = { version = "0.32", features = ["bundled"] }
 anyhow = "1.0"
 urlencoding = "2.1"
 tempfile = "3.24.0"
